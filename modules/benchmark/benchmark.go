@@ -33,7 +33,12 @@ func StartBenchmark(listenPort uint) map[string]int {
 			defer wg.Done()
 
 			semaphore <- struct{}{}
+			startTime := time.Now()
 			defer func() {
+				if result[service.Name] > 0 {
+					result[service.Name] = int(int(time.Since(startTime)) / 1000000)
+				}
+
 				<-semaphore
 			}()
 
